@@ -12,7 +12,6 @@
           <th>ID</th>
           <th>Nick</th>
           <th>Nombre</th>
-          <th>Caja</th>
           <th>Estado</th>
           <th></th>
 
@@ -56,19 +55,6 @@
                 <input type="password" class="form-control" id="confirmar" name="confirmar">
               </div>
             </div>
-          </div>
-
-
-
-
-          <div class="form-group">
-            <label for="id_caja" class="col-form-label">Caja:</label>
-            <select name="id_caja" id="id_caja" class="form-control">
-              <?php foreach ($data['cajas'] as $c) { ?>
-                <option value="<?= $c['id_caja'] ?>"><?= $c['caja'] ?></option>
-              <?php } ?>
-
-            </select>
           </div>
 
         </form>

@@ -1,5 +1,4 @@
 let tblUsuarios;
-let tblCajas;
 let tblClientes;
 let tblCategorias;
 let tblMedidas;
@@ -15,7 +14,6 @@ document.addEventListener("DOMContentLoaded", function () {
       { data: "id_usuario" },
       { data: "nick" },
       { data: "nombre" },
-      { data: "caja" },
       { data: "usuario_estado" },
       { data: "acciones" },
     ],
@@ -41,38 +39,7 @@ document.addEventListener("DOMContentLoaded", function () {
     },
   });
 
-  tblCajas = $("#tblCajas").DataTable({
-    ajax: {
-      url: base_url + "Cajas/listar",
-      dataSrc: "",
-    },
-    columns: [
-      { data: "id_caja" },
-      { data: "caja" },
-      { data: "caja_estado" },
-      { data: "acciones" },
-    ],
-    language: {
-      decimal: "",
-      emptyTable: "No hay información",
-      info: "Mostrando _START_ a _END_ de _TOTAL_ Entradas",
-      infoEmpty: "Mostrando 0 to 0 of 0 Entradas",
-      infoFiltered: "(Filtrado de _MAX_ total entradas)",
-      infoPostFix: "",
-      thousands: ",",
-      lengthMenu: "Mostrar _MENU_ Entradas",
-      loadingRecords: "Cargando...",
-      processing: "Procesando...",
-      search: "Buscar:",
-      zeroRecords: "Sin resultados encontrados",
-      paginate: {
-        first: "Primero",
-        last: "Ultimo",
-        next: "Siguiente",
-        previous: "Anterior",
-      },
-    },
-  });
+  
 
   tblClientes = $("#tblClientes").DataTable({
     ajax: {
@@ -336,7 +303,6 @@ function btnEditarUsuario(id) {
       document.getElementById("id_usuario").value = res.id_usuario;
       document.getElementById("nick").value = res.nick;
       document.getElementById("nombre").value = res.nombre;
-      document.getElementById("id_caja").value = res.id_caja;
       document.getElementById("clave").value = 1;
       document.getElementById("claves").classList.add("d-none");
       $("#usuarioModal").modal("show");
@@ -404,151 +370,7 @@ function btnActivarUsuario(id) {
   });
 }
 
-//CAJAS
-function frmCaja() {
-  document.getElementById("frmCaja").reset();
-  document.getElementById("id_caja").value = "";
-  document.getElementById("title").innerHTML = "Nueva Caja";
-  document.getElementById("btnAccion").innerHTML = "Guardar";
-  $("#cajaModal").modal("show");
-}
 
-function registrarCaja(e) {
-  e.preventDefault();
-  const caja = document.getElementById("caja");
-  if (caja.value == "") {
-    Swal.fire({
-      title: "Alerta",
-      text: "Los campos son obligatorios",
-      icon: "warning",
-    });
-  } else {
-    const url = base_url + "Cajas/registrar";
-    const frm = document.getElementById("frmCaja");
-    const http = new XMLHttpRequest();
-    http.open("POST", url, true);
-    http.send(new FormData(frm));
-    http.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        try {
-          const res = JSON.parse(this.responseText);
-          if (res == "si") {
-            Swal.fire({
-              title: "Datos registrados",
-              text: "",
-              icon: "success",
-              showConfirmButton: false,
-              timer: 2000,
-            });
-            $("#cajaModal").modal("hide");
-            tblCajas.ajax.reload();
-          } else if (res == "mod") {
-            Swal.fire({
-              title: "Datos modificados con exito",
-              text: "",
-              icon: "success",
-              showConfirmButton: false,
-              timer: 2000,
-            });
-            $("#cajaModal").modal("hide");
-            tblCajas.ajax.reload();
-          } else {
-            Swal.fire({
-              title: "Error!",
-              text: res,
-              icon: "error",
-              timer: 4000,
-            });
-          }
-        } catch (error) {
-          console.error("Error al parsear JSON:", this.responseText);
-          Swal.fire({
-            title: "Error",
-            text: "Error inesperado en el servidor",
-            icon: "error",
-          });
-        }
-      }
-    };
-  }
-}
-
-function btnEditarCaja(id) {
-  document.getElementById("title").innerHTML = "Actualizar Caja";
-  document.getElementById("btnAccion").innerHTML = "Modificar";
-  const url = base_url + "Cajas/editar/" + id;
-  const http = new XMLHttpRequest();
-  http.open("GET", url, true);
-  http.send();
-  http.onreadystatechange = function () {
-    if (this.readyState == 4 && this.status == 200) {
-      const res = JSON.parse(this.responseText);
-      document.getElementById("id_caja").value = res.id_caja;
-      document.getElementById("caja").value = res.caja;
-      $("#cajaModal").modal("show");
-    }
-  };
-}
-
-function btnInactivarCaja(id) {
-  Swal.fire({
-    title: "¿Quieres inactivar la caja?",
-    text: "La caja no se eliminara, solo se inactivara",
-    icon: "warning",
-    showcancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Si, inactivar",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      const url = base_url + "Cajas/inactivar/" + id;
-      const http = new XMLHttpRequest();
-      http.open("GET", url, true);
-      http.send();
-      http.onreadystatechange = function () {
-        console.log(this.responseText);
-        tblCajas.ajax.reload();
-      };
-      Swal.fire({
-        title: "Registrando inactivado",
-        text: "",
-        icon: "success",
-        showConfirmButton: false,
-        timer: 2000,
-      });
-    }
-  });
-}
-
-function btnActivarCaja(id) {
-  Swal.fire({
-    title: "¿Estas seguro de activar la caja?",
-    text: "",
-    icon: "warning",
-    showcancelButton: true,
-    confirmButtonColor: "#3085d6",
-    cancelButtonColor: "#d33",
-    confirmButtonText: "Si, confirmar",
-  }).then((result) => {
-    if (result.isConfirmed) {
-      const url = base_url + "Cajas/activar/" + id;
-      const http = new XMLHttpRequest();
-      http.open("GET", url, true);
-      http.send();
-      http.onreadystatechange = function () {
-        console.log(this.responseText);
-        tblCajas.ajax.reload();
-      };
-      Swal.fire({
-        title: "Registrado activado",
-        text: "",
-        icon: "success",
-        showConfirmButton: false,
-        timer: 2000,
-      });
-    }
-  });
-}
 
 //CLIENTES
 function frmCliente() {

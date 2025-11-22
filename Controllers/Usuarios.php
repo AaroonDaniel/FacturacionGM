@@ -8,7 +8,7 @@ class Usuarios extends Controller
     }
     public function index()
     {
-        $data['cajas'] = $this->model->getCajas();
+        $data['usuarios'] = $this->model->getUsuarios();
         $this->views->getView($this, "index", $data);
     }
 
@@ -60,15 +60,14 @@ class Usuarios extends Controller
         $nombre = $_POST['nombre'];
         $clave = $_POST['clave'];
         $confirmar = $_POST['confirmar'];
-        $id_caja = $_POST['id_caja'];
-        if (empty($nick) || empty($nombre) || empty($id_caja)) {
+        if (empty($nick) || empty($nombre) ) {
             $msg = "Todos los campos son obligatorios";
         } else {
             if ($id_usuario == "") {
                 if ($clave != $confirmar) {
                     $msg = "Las contraseñas no coinciden";
                 } else {
-                    $data = $this->model->registrarUsuario($nick, $nombre, md5($clave), $id_caja);
+                    $data = $this->model->registrarUsuario($nick, $nombre, md5($clave));
                     if ($data == "ok") {
                         $msg = "si";
                     } else {
@@ -76,7 +75,7 @@ class Usuarios extends Controller
                     }
                 }
             }else{
-                $data=$this->model->modificarUsuario($nick, $nombre, $id_caja, $id_usuario);
+                $data=$this->model->modificarUsuario($nick, $nombre, $id_usuario);
                 if($data=="modificado"){
                     $msg="mod";
                 }else{
