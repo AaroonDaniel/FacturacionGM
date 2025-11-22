@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<facturaComputarizadaCompraVenta xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="facturaComputarizadaCompraVenta.xsd">
+        <cabecera>
+                <nitEmisor>3327479013</nitEmisor>
+                <razonSocialEmisor>FERRETERIA EL FERRETERO</razonSocialEmisor>
+                <nunicipio>LA PAZ</nunicipio>
+                <telefono>72578583</telefono>
+                <numeroFactura>9</numeroFactura>
+                <cuf>E3ACE3F0A8D13F8C91FBAA1A616D173E6E2E923BA68B708E2FDC12F74</cuf>
+                <cufd>FBQWVCK31nREE=IxRDc4RkQ5MEU=Q0tsZG1RZUpaVUMzUyMUQwMjY1Nk</cufd>
+                <codigoSucursal>0</codigoSucursal>
+                <direccion>Calle 4 Ceja El Alto</direccion>
+                <codigoPuntoVenta>0</codigoPuntoVenta>
+                <fechaEmision>2025-09-29T16:39:58.993</fechaEmision>
+                <nombreRazonSocial>darlin soliz</nombreRazonSocial>
+                <codigoTipoDocumentoIdentidad>1</codigoTipoDocumentoIdentidad>
+                <numeroDocumento>123456</numeroDocumento>
+                <complemento>LP</complemento>
+                <codigoCliente>123456</codigoCliente>
+                <codigoMetodoPago>1</codigoMetodoPago>
+                <numeroTarjeta xsi:nil="true" />
+                <montoTotal>39.50</montoTotal>
+                <montoTotalSujetoIva>39.50</montoTotalSujetoIva>
+                <montoGiftCard>0</montoGiftCard>
+                <descuentoAdicional>0.00</descuentoAdicional>
+                <codigoExcepcion xsi:nil="true" />
+                <cafc xsi:nil="true" />
+                <codigoMoneda>1</codigoMoneda>
+                <tipoCambio>1</tipoCambio>
+                <montoTotalMoneda>39.50</montoTotalMoneda>
+                <leyenda>Ley N° 453: Puedes acceder a la reclamación cuando tus derechos han sido
+                        vulnerados.</leyenda>
+                <usuario>admin</usuario>
+                <codigoDocumentoSector>1</codigoDocumentoSector>
+        </cabecera>
+        <detalle>
+                <actividadEconomica>620000</actividadEconomica>
+                <codigoProductoSin>82221</codigoProductoSin>
+                <codigoProducto>45623</codigoProducto>
+                <descripcion>PAPEL</descripcion>
+                <cantidad>1.00</cantidad>
+                <unidadMedida>57</unidadMedida>
+                <precioUnitario>6.00</precioUnitario>
+                <montoDescuento>4.00</montoDescuento>
+                <subTotal>2.00</subTotal>
+                <numeroSerie xsi:nil="true" />
+                <numeroImei xsi:nil="true" />
+        </detalle>
+        <detalle>
+                <actividadEconomica>620000</actividadEconomica>
+                <codigoProductoSin>82221</codigoProductoSin>
+                <codigoProducto>89532</codigoProducto>
+                <descripcion>LIB</descripcion>
+                <cantidad>7.00</cantidad>
+                <unidadMedida>57</unidadMedida>
+                <precioUnitario>7.50</precioUnitario>
+                <montoDescuento>15</montoDescuento>
+                <subTotal>37.50</subTotal>
+                <numeroSerie xsi:nil="true" />
+                <numeroImei xsi:nil="true" />
+        </detalle>
+</facturaComputarizadaCompraVenta>
