@@ -55,11 +55,13 @@ class Usuarios extends Controller
 
     public function registrar()
     {
+        // Verifica que id_caja NO esté aquí
         $id_usuario = $_POST['id_usuario'];
         $nick = $_POST['nick'];
         $nombre = $_POST['nombre'];
         $clave = $_POST['clave'];
         $confirmar = $_POST['confirmar'];
+        
         if (empty($nick) || empty($nombre) ) {
             $msg = "Todos los campos son obligatorios";
         } else {

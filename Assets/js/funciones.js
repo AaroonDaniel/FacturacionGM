@@ -233,6 +233,9 @@ function registrarUsuario(e) {
   const nick = document.getElementById("nick");
   const nombre = document.getElementById("nombre");
   const clave = document.getElementById("clave");
+  // 1. Obtenemos el botón para bloquearlo
+  const btnAccion = document.getElementById("btnAccion");
+
   if (nick.value == "" || nombre.value == "" || clave.value == "") {
     Swal.fire({
       title: "Alerta",
@@ -240,50 +243,60 @@ function registrarUsuario(e) {
       icon: "warning",
     });
   } else {
+    // 2. Deshabilitamos el botón y cambiamos texto
+    btnAccion.disabled = true;
+    btnAccion.innerHTML = "Procesando...";
+
     const url = base_url + "Usuarios/registrar";
     const frm = document.getElementById("frmUsuario");
     const http = new XMLHttpRequest();
     http.open("POST", url, true);
     http.send(new FormData(frm));
     http.onreadystatechange = function () {
-      if (this.readyState == 4 && this.status == 200) {
-        try {
-          const res = JSON.parse(this.responseText);
-          if (res == "si") {
+      if (this.readyState == 4) {
+        // 3. Reactivamos el botón sin importar si hubo éxito o error
+        btnAccion.disabled = false;
+        btnAccion.innerHTML = "Guardar";
+
+        if (this.status == 200) {
+          try {
+            const res = JSON.parse(this.responseText);
+            if (res == "si") {
+              Swal.fire({
+                title: "Datos registrados",
+                text: "",
+                icon: "success",
+                showConfirmButton: false,
+                timer: 2000,
+              });
+              $("#usuarioModal").modal("hide");
+              tblUsuarios.ajax.reload();
+            } else if (res == "mod") {
+              Swal.fire({
+                title: "Datos modificados con exito",
+                text: "",
+                icon: "success",
+                showConfirmButton: false,
+                timer: 2000,
+              });
+              $("#usuarioModal").modal("hide");
+              tblUsuarios.ajax.reload();
+            } else {
+              Swal.fire({
+                title: "Error!",
+                text: res,
+                icon: "error",
+                timer: 4000,
+              });
+            }
+          } catch (error) {
+            console.error("Error al parsear JSON:", this.responseText);
             Swal.fire({
-              title: "Datos registrados",
-              text: "",
-              icon: "success",
-              showConfirmButton: false,
-              timer: 2000,
-            });
-            $("#usuarioModal").modal("hide");
-            tblUsuarios.ajax.reload();
-          } else if (res == "mod") {
-            Swal.fire({
-              title: "Datos modificados con exito",
-              text: "",
-              icon: "success",
-              showConfirmButton: false,
-              timer: 2000,
-            });
-            $("#usuarioModal").modal("hide");
-            tblUsuarios.ajax.reload();
-          } else {
-            Swal.fire({
-              title: "Error!",
-              text: res,
+              title: "Error",
+              text: "Error inesperado en el servidor",
               icon: "error",
-              timer: 4000,
             });
           }
-        } catch (error) {
-          console.error("Error al parsear JSON:", this.responseText);
-          Swal.fire({
-            title: "Error",
-            text: "Error inesperado en el servidor",
-            icon: "error",
-          });
         }
       }
     };
