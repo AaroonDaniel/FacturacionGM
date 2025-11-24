@@ -564,4 +564,5 @@ class Pedidos extends Controller
 
         $pdf->Output("factura.pdf", "I");
     }
+
 }

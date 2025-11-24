@@ -15,7 +15,6 @@
           <th>Correo electronico</th>
           <th>Estado</th>
           <th></th>
-
         </tr>
       </thead>
     </table>

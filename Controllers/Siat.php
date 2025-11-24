@@ -87,66 +87,51 @@ class Siat
 
     public function cufd()
     {
-        // Validamos errores para que no rompan el JSON
+        $wsdl = "https://pilotosiatservicios.impuestos.gob.bo/v2/FacturacionCodigos?wsdl";
+
+        $codigoAmbiente = 2;
+        $codigoModalidad = 2;
+        $codigoPuntoVenta = 0;
+        $codigoSistema = "3521D02656B1D78FD90E";
+        $codigoSucursal = 0;
+        $cuis = $_SESSION['scuis'];
+        $nit = "3327479013";
+
+
+        $parametros = array(
+            'SolicitudCufd' => array(
+                'codigoAmbiente' => $codigoAmbiente,
+                'codigoModalidad' => $codigoModalidad,
+                'codigoPuntoVenta' => $codigoPuntoVenta,
+                'codigoSistema' => $codigoSistema,
+                'codigoSucursal' => $codigoSucursal,
+                'cuis' => $cuis,
+                'nit' => $nit
+            )
+        );
+
+        $opciones = array(
+            'http' => array(
+                'header' => "apikey: TokenApi eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJnYXJ5LnJhbWlyZXouY29kaWdvQGdtYWlsLmNvbSIsImNvZGlnb1Npc3RlbWEiOiIzNTIxRDAyNjU2QjFENzhGRDkwRSIsIm5pdCI6Ikg0c0lBQUFBQUFBQUFETTJOakkzTWJjME1EUUdBTFIzOFlFS0FBQUEiLCJpZCI6NTA1NzAxNywiZXhwIjoxNzY0NTE0NTk3LCJpYXQiOjE3NTgzMDgxNjcsIm5pdERlbGVnYWRvIjozMzI3NDc5MDEzLCJzdWJzaXN0ZW1hIjoiU0ZFIn0.skiuaKRJlBJ7MKKXoUkvtwDq_iqYzSfec8YxOK0fejfyGKnTEVy0pKfSYzBIEd5vAjE9LBH0py2vlx3Hn3FPOw",
+                'timeout' => 5
+            )
+        );
+
+        $contexto = stream_context_create($opciones);
+
         try {
-            $res = array();
-
-            // Verificamos si necesitamos pedir un nuevo CUFD (No existe o ha expirado)
-            $necesitaNuevo = !isset($_SESSION['scufd']) || !isset($_SESSION['sfechaVigenciaCufd']);
-
-            if (!$necesitaNuevo) {
-                // Si existe, validamos la fecha
-                $fechaVigente = substr($_SESSION['sfechaVigenciaCufd'], 0, 16);
-                $fechaVigente = str_replace("T", " ", $fechaVigente);
-
-                // Si la fecha actual es mayor a la vigencia, necesitamos uno nuevo
-                if ($fechaVigente < date("Y-m-d H:i")) {
-                    $necesitaNuevo = true;
-                }
-            }
-
-            if ($necesitaNuevo) {
-                // Intentamos conectar con SIAT
-                require_once "Siat.php"; // Usar require_once es mas seguro
-                $siat = new Siat();
-                $respuestaSiat = $siat->cufd();
-
-                // Validamos que la respuesta de SIAT sea un objeto válido
-                if (isset($respuestaSiat->RespuestaCufd->transaccion) && $respuestaSiat->RespuestaCufd->transaccion == true) {
-                    $_SESSION['scufd'] = $respuestaSiat->RespuestaCufd->codigo;
-                    $_SESSION['scodigoControl'] = $respuestaSiat->RespuestaCufd->codigoControl;
-                    $_SESSION['sfechaVigenciaCufd'] = $respuestaSiat->RespuestaCufd->fechaVigencia;
-                    $res = $respuestaSiat;
-                } else {
-                    // Si SIAT responde pero con error (transaccion = false)
-                    $res['RespuestaCufd']['transaccion'] = false;
-                    $res['RespuestaCufd']['mensajesList']['descripcion'] = "No se pudo obtener CUFD del SIAT.";
-                }
-            } else {
-                // Usamos el de la sesión
-                $res['RespuestaCufd']['transaccion'] = true;
-                $res['RespuestaCufd']['codigo'] = $_SESSION['scufd'];
-                $res['RespuestaCufd']['fechaVigencia'] = $_SESSION['sfechaVigenciaCufd'];
-                // Estructura para mantener compatibilidad con el JS
-                $res = json_decode(json_encode($res));
-            }
-
-            echo json_encode($res);
-        } catch (Throwable $th) {
-            // CAPTURA DE ERRORES: Si falla la conexión o hay error de código
-            $errorData = [
-                'RespuestaCufd' => [
-                    'transaccion' => false,
-                    'mensajesList' => [
-                        'descripcion' => 'Error interno al solicitar CUFD: ' . $th->getMessage()
-                    ]
-                ]
-            ];
-            echo json_encode($errorData);
+            $cliente = new SoapClient($wsdl, [
+                'stream_context' => $contexto,
+                'cache_wsdl' => WSDL_CACHE_NONE,
+                'compression' => SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP | SOAP_COMPRESSION_DEFLATE
+            ]);
+            $resultado = $cliente->cufd($parametros);
+        } catch (SoapFault $fault) {
+            $resultado = false;
         }
-        die();
+        return $resultado;
     }
-    //Unsolved Case
+
     public function sincronizarActividades()
     {
         $wsdl = "https://pilotosiatservicios.impuestos.gob.bo/v2/FacturacionSincronizacion?wsdl";
