@@ -179,7 +179,8 @@ function verificarComunicacion() {
     dataType: "json",
     success: function (data) {
       if (data.RespuestaComunicacion.transaccion == true) {
-        statusElement.innerHTML = data.RespuestaComunicacion.mensajesList.descripcion;
+        statusElement.innerHTML =
+          data.RespuestaComunicacion.mensajesList.descripcion;
         statusElement.className = "badge badge-success";
       } else {
         statusElement.innerHTML = "DESCONECTADO";
@@ -216,7 +217,8 @@ function cufd() {
     dataType: "json",
     success: function (data) {
       if (data.RespuestaCufd.transaccion == true) {
-        cufdElement.innerHTML = "CUFD vigente " + data.RespuestaCufd.fechaVigencia.substring(0, 16);
+        cufdElement.innerHTML =
+          "CUFD vigente " + data.RespuestaCufd.fechaVigencia.substring(0, 16);
       } else {
         cufdElement.innerHTML = "No existe CUFD vigente";
       }
@@ -246,7 +248,7 @@ function confirmarAnulacion(cuf, id_factura) {
         text: "Comunicando con el servicio SIAT, por favor espere.",
         icon: "info",
         allowOutsideClick: false,
-        showConfirmButton: false, 
+        showConfirmButton: false,
         didOpen: () => {
           Swal.showLoading();
         },
@@ -265,7 +267,7 @@ function confirmarAnulacion(cuf, id_factura) {
           let mensaje =
             data.RespuestaServicioFacturacion.codigoDescripcion ||
             "Respuesta de SIAT";
-          let iconoSwal = "error"; 
+          let iconoSwal = "error";
           let tituloSwal = "Error de Anulación";
 
           if (
@@ -511,14 +513,18 @@ function emitirFactura() {
     data: { factura: datos, id_cliente: id_cliente },
     dataType: "json",
     success: function (data) {
-      Swal.close(); 
+      Swal.close();
 
-      let esOfflinePendiente = data.RespuestaServicioFacturacion.offline === true;
+      let esOfflinePendiente =
+        data.RespuestaServicioFacturacion.offline === true;
 
       if (data.RespuestaServicioFacturacion.transaccion == true) {
         Swal.fire({
           title: data.RespuestaServicioFacturacion.codigoDescripcion,
-          text: esOfflinePendiente ? data.RespuestaServicioFacturacion.mensajesList.descripcion : "Codigo recepcion " + data.RespuestaServicioFacturacion.codigoRecepcion,
+          text: esOfflinePendiente
+            ? data.RespuestaServicioFacturacion.mensajesList.descripcion
+            : "Codigo recepcion " +
+              data.RespuestaServicioFacturacion.codigoRecepcion,
           icon: "success",
           timer: 2000,
           showConfirmButton: false,
@@ -528,9 +534,13 @@ function emitirFactura() {
         }, 2000);
       } else {
         let errorText = "SIAT rechazó la factura.";
-         if (data.RespuestaServicioFacturacion.mensajesList && data.RespuestaServicioFacturacion.mensajesList.descripcion) {
-             errorText = data.RespuestaServicioFacturacion.mensajesList.descripcion;
-         }
+        if (
+          data.RespuestaServicioFacturacion.mensajesList &&
+          data.RespuestaServicioFacturacion.mensajesList.descripcion
+        ) {
+          errorText =
+            data.RespuestaServicioFacturacion.mensajesList.descripcion;
+        }
         Swal.fire({
           title: data.RespuestaServicioFacturacion.codigoDescripcion || "Error",
           text: errorText,
@@ -539,12 +549,95 @@ function emitirFactura() {
       }
     },
     error: function (jqXHR, textStatus, errorThrown) {
-        Swal.close();
-        Swal.fire({
-            title: "Error de Conexión",
-            text: "No se pudo conectar con el servidor para emitir la factura. Detalles: " + textStatus + " " + errorThrown,
-            icon: "error",
-        });
-    }
+      Swal.close();
+      Swal.fire({
+        title: "Error de Conexión",
+        text:
+          "No se pudo conectar con el servidor para emitir la factura. Detalles: " +
+          textStatus +
+          " " +
+          errorThrown,
+        icon: "error",
+      });
+    },
   });
+}
+
+// Función para abrir el modal limpio
+function abrirModalRegistro() {
+    // Limpiamos el formulario del modal
+    document.getElementById("frmClienteRegistro").reset();
+    document.getElementById("id_cliente_registro").value = "";
+    
+    // Usamos jQuery para abrir el modal de Bootstrap
+    $('#clienteModal').modal('show');
+}
+
+// Función para guardar el cliente desde el Modal
+function registrarCliente(e) {
+    e.preventDefault();
+
+    // Capturamos los valores usando los NUEVOS IDs del modal
+    const documentoid = document.getElementById("documentoid_registro").value;
+    const complementoid = document.getElementById("complementoid_registro").value;
+    const razon_social = document.getElementById("razon_social_registro").value;
+    const cliente_email = document.getElementById("cliente_email_registro").value;
+    const id_cliente = document.getElementById("id_cliente_registro").value;
+
+    if (documentoid == "" || razon_social == "") {
+        Swal.fire({
+            position: 'top-end',
+            icon: 'error',
+            title: 'Documento y Razón Social son obligatorios',
+            showConfirmButton: false,
+            timer: 2000
+        });
+        return;
+    }
+
+    const url = base_url + "Clientes/registrar";
+    const frm = new FormData();
+    frm.append("documentoid", documentoid);
+    frm.append("complementoid", complementoid);
+    frm.append("razon_social", razon_social);
+    frm.append("cliente_email", cliente_email);
+    frm.append("id_cliente", id_cliente);
+
+    fetch(url, {
+        method: "POST",
+        body: frm
+    })
+    .then(res => res.json())
+    .then(res => {
+        if (res == "si") {
+            Swal.fire({
+                position: 'top-end',
+                icon: 'success',
+                title: 'Cliente registrado con éxito',
+                showConfirmButton: false,
+                timer: 1500
+            });
+
+            // 1. Cerrar el modal
+            $('#clienteModal').modal('hide');
+
+            // 2. Rellenar el formulario principal (Nuevo Pedido)
+            document.getElementById("documentoid").value = documentoid; // Pone el CI en el buscador
+            
+            // 3. Ejecutar buscarCliente() para traer el ID y llenar el resto
+            if (typeof buscarCliente === "function") {
+                buscarCliente();
+            }
+
+        } else if (res == "modificado") {
+            Swal.fire("Modificado", "Cliente modificado con éxito", "success");
+            $('#clienteModal').modal('hide');
+        } else {
+            Swal.fire("Error", res, "error");
+        }
+    })
+    .catch(error => {
+        console.error(error);
+        Swal.fire("Error", "Ocurrió un problema con el servidor", "error");
+    });
 }

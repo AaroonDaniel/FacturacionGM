@@ -218,6 +218,12 @@ document.addEventListener("DOMContentLoaded", function () {
   });
 });
 
+//nuevo cliente desde pedidos
+
+function nuevoCliente() {
+  alert("hola");
+}
+
 //USUARIOS
 function frmUsuario() {
   document.getElementById("frmUsuario").reset();

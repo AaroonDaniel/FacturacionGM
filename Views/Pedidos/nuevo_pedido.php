@@ -9,7 +9,7 @@
                 <div class="form-group col-md-3">
                     <label for="nrofactura">Nro. Factura</label>
                     <input type="number" id="nrofactura" name="nrofactura" class="form-control">
-                    <input type="hidden" id="nickuser" name="nickuser" value="<?=$_SESSION['nick']?>">
+                    <input type="hidden" id="nickuser" name="nickuser" value="<?= $_SESSION['nick'] ?>">
                 </div>
                 <div class="form-group col-md-3">
                     <label for="actEconomica">Act. Economica</label>
@@ -33,7 +33,7 @@
 
                 <div class="form-group col-md-6">
                     <label for="razon_social">Razon social</label>
-                    <input type="hidden" id="id_cliente" name="id_cliente"> 
+                    <input type="hidden" id="id_cliente" name="id_cliente">
                     <input type="hidden" id="complementoid" name="complementoid">
                     <input type="text" id="razon_social" name="razon_social" class="form-control" readonly>
 
@@ -41,8 +41,14 @@
                 <div class="form-group col-md-6">
                     <label for="cliente_email">Correo electronico</label>
                     <input type="text" id="cliente_email" name="cliente_email" class="form-control" readonly>
-
                 </div>
+
+                <div class="form group col-md-12 text-right">
+                    <button class="btn btn-success" type="button" onclick="abrirModalRegistro()">
+                        <i class="fas fa-plus"></i> Nueva cliente
+                    </button>
+                </div>
+
             </div>
             <div class="form-group col-md-3">
                 <div class="card">
@@ -71,7 +77,7 @@
                             ?>
                         </p>
                         <span class="badge badge-secondary" id="cufd">No existe CUFD vigente</span>
-                        <input type="hidden" id="cufdValor" name="cufdValor" value="<?=$_SESSION['scufd']?>">
+                        <input type="hidden" id="cufdValor" name="cufdValor" value="<?= $_SESSION['scufd'] ?>">
                     </div>
                 </div>
             </div>
@@ -159,5 +165,50 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="clienteModal" tabindex="-1" role="dialog" aria-labelledby="clienteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="title">Nuevo cliente</h5>
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="frmClienteRegistro" autocomplete="off">
+                    <div class="form-group">
+                        <label for="razon_social_registro" class="col-form-label">Razón Social <span class="text-danger">*</span>:</label>
+                        <input type="hidden" id="id_cliente_registro" name="id_cliente">
+                        <input type="text" class="form-control" id="razon_social_registro" name="razon_social" placeholder="Nombre del cliente">
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="documentoid_registro" class="col-form-label">NIT/CI <span class="text-danger">*</span>:</label>
+                                <input type="text" class="form-control" id="documentoid_registro" name="documentoid" placeholder="Documento">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="complementoid_registro" class="col-form-label">Complemento:</label>
+                                <input type="text" class="form-control" id="complementoid_registro" name="complementoid" placeholder="Opcional">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cliente_email_registro" class="col-form-label">Correo electrónico:</label>
+                        <input type="email" class="form-control" id="cliente_email_registro" name="cliente_email" placeholder="email@ejemplo.com">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                <button type="button" class="btn btn-primary" onclick="registrarCliente(event)">Guardar</button>
+            </div>
+        </div>
+    </div>
+</div>
 <?php require_once "Views/Templates/footer.php"; ?>
-<script src="<?=base_url ?>Assets/js/facturar.js"></script>
+<script src="<?= base_url ?>Assets/js/facturar.js"></script>
