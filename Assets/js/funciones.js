@@ -406,9 +406,12 @@ function registrarCliente(e) {
   const razon_social = document.getElementById("razon_social");
   if (documentoid.value == "" || razon_social.value == "") {
     Swal.fire({
+      position: 'top-end',
+      icon: "warning",
       title: "Alerta",
       text: "Los campos son obligatorios",
-      icon: "warning",
+      showConfirmButton: false,
+      timer: 2000
     });
   } else {
     const url = base_url + "Clientes/registrar";

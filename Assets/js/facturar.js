@@ -465,7 +465,7 @@ function emitirFactura() {
   factura.push({
     cabecera: {
       nitEmisor: "3327479013",
-      razonSocialEmisor: "FERRETERIA EL FERRETERO",
+      razonSocialEmisor: "CODIGOGM",
       municipio: "LA PAZ",
       telefono: "72578583",
       numeroFactura: numeroFactura,
@@ -503,8 +503,6 @@ function emitirFactura() {
       detalle: prod,
     });
   });
-
-  //console.log(factura)
 
   var datos = { factura };
   $.ajax({
@@ -563,21 +561,15 @@ function emitirFactura() {
   });
 }
 
-// Función para abrir el modal limpio
+
 function abrirModalRegistro() {
-    // Limpiamos el formulario del modal
     document.getElementById("frmClienteRegistro").reset();
     document.getElementById("id_cliente_registro").value = "";
-    
-    // Usamos jQuery para abrir el modal de Bootstrap
     $('#clienteModal').modal('show');
 }
 
-// Función para guardar el cliente desde el Modal
 function registrarCliente(e) {
     e.preventDefault();
-
-    // Capturamos los valores usando los NUEVOS IDs del modal
     const documentoid = document.getElementById("documentoid_registro").value;
     const complementoid = document.getElementById("complementoid_registro").value;
     const razon_social = document.getElementById("razon_social_registro").value;
